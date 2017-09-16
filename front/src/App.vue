@@ -1,28 +1,52 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
-    <hello></hello>
+    <section id="flexarea" v-for="i in 2" :key="i">
+      <template v-for="n in 2">
+        <pixel :key="n" :position='{x: i, y: n}' @coordinates='test'></pixel>
+      </template>
+    </section>
+    <h1>Coordinates</h1>
+    <p>{{x}}, {{y}}</p>
   </div>
 </template>
 
 <script>
-import Hello from './components/Hello'
+import Pixel from './components/Pixel'
 
 export default {
   name: 'app',
   components: {
-    Hello
+    Pixel
+  },
+  data() {
+    return {
+      x: 0,
+      y: 0
+    }
+  },
+  methods: {
+    test: function(args) {
+      console.log(args)
+      this.x = args.x
+      this.y = args.y
+    }
+  },
+  computed: {
   }
 }
 </script>
 
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+<style lang="scss">
+#app {}
+
+#flexarea {
+  display: flex;
+  width: 100px;
+  justify-content: center;
+  margin: 0 auto;
+
+  .pixel:hover {
+    background: blue;
+  }
 }
 </style>
