@@ -5,9 +5,9 @@
   socket.on('pixelStream', function (data) {
     console.log(data);
     socket.emit('pixel_changed', { 
-    	posX: 'xpos',
-    	posY: 'ypos',
-    	color: 'col',
+    	posX: 1,
+    	posY: 1,
+    	color: 'blue',
      });
   });
 </script>

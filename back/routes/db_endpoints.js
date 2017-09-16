@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const User = require('../models/user');
 const Pixel = require('../models/pixel');
 
+mongoose.Promise = Promise;
 // Socket.io setup
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
@@ -21,41 +22,37 @@ server.listen(3000);
 
 router.get('/', function (req, res) {
 	console.log("We got a visitor");
-		
 
-		// Pixel.findOne({ pixelID: "000X000" })
-		// 	.then(pixel => {
-		// 		//res.send(200, pixel)
-		// 		console.log("STUF" + pixel);
-		// 		next()
-		// 	})
-		// 	.catch(err => {
-		// 		//res.send(500, err)
-		// 	})
-
-  res.sendFile(__dirname + '/socket.html');
+	var pixelArr = [];
+	Pixel.find({}, '-_id posX posY currentColor', function(err, pixels) {
+	    pixels.forEach(function(pixel) {
+	    	var string = JSON.stringify(pixel);
+			var objectValue = JSON.parse(string);
+	    	pixelArr.push(objectValue);
+	    });
+	    console.log(pixelArr);
+		res.json(pixelArr); 
+	});
 });
 
 io.on('connection', function (socket) {
-		Pixel.find({}, '-_id posX posY currentColor', function(err, pixels) {
-	    	var pixelArr = [];
 
-		    pixels.forEach(function(pixel) {
-		    	console.log("from db " + pixel);
-		    	var string = JSON.stringify(pixel);
-       			var objectValue = JSON.parse(string);
-		    	pixelArr.push(objectValue);
-		    });
-		    
-		    socket.emit('pixelStream', pixelArr);
-		});
+  	// socket.emit('news', { hello: 'world' });
 
-
-
-  socket.emit('news', { hello: 'world' });
-  socket.on('pixel_changed', function (data) {
-    console.log(data);
-  });
+  	socket.on('pixel_changed', function (data) {
+		Pixel.update({'posX': data.posX, 'posY': data.posY}, {$set: { 'currentColor': data.color }}, {upsert: true, strict: false}, function(err){console.log(err)});
+  	});
 });
 
 module.exports = router;
+
+
+// Pixel.findOne({ pixelID: "000X000" })
+// 	.then(pixel => {
+// 		//res.send(200, pixel)
+// 		console.log("STUF" + pixel);
+// 		next()
+// 	})
+// 	.catch(err => {
+// 		//res.send(500, err)
+// 	})
