@@ -49,8 +49,17 @@ router.get('/', function (req, res) {
 io.on('connection', function (socket) {
   	socket.emit('pixelStream', { hello: 'world' });
   	socket.on('pixel_changed', function (data) {
-  		console.log('User x: changed pixel (' + data.posX + "," + data.posY + ") to color " + data.color);
-		Pixel.update({'posX': data.posX, 'posY': data.posY}, {$set: { 'currentColor': data.color }}, {upsert: true, strict: false}, function(err){res.status(500).send(err);});
+  		Pixel.update({'posX': data.posX, 'posY': data.posY}, {$set: { 'currentColor': data.color }}, {passRawResult : true, upsert: false, strict: false}, function(err, pixel){
+			if(pixel.nModified < 1){
+				console.log('User x: failed to change pixel (' + data.posX + "," + data.posY + ") to color " + data.color);
+				socket.emit('confirm_pixel_change', { pixelChanged: false });
+			}else{
+				console.log('User x: changed pixel (' + data.posX + "," + data.posY + ") to color " + data.color);
+				socket.emit('confirm_pixel_change', { pixelChanged: true });
+			}
+		});
+
+
   	});
 });
 

@@ -4,13 +4,18 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
 <script>
 	function changePixel() {
-	  var socket = io.connect( "http://localhost:3000");
-	  socket.on('pixelStream', function (data) {
-	    socket.emit('pixel_changed', { 
-	    	posX: 1,
-	    	posY: 1,
-	    	color: 'blue',
-	     });
-	  });
+		var socket = io.connect( "http://localhost:3000");
+		socket.emit('pixel_changed', { 
+			posX: 1,
+			posY: 1,
+			color: 'black',
+		});
+	  
+		socket.on('confirm_pixel_change', function (data) {
+			//This is where you get bool to tell if the pixel was updated successfully 
+			console.log(data.pixelChanged);
+		});
 	}
 </script>
+<!-- 	  socket.on('pixelStream', function (data) {
+	  }); -->
