@@ -20,7 +20,7 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 server.listen(3000);
 
-router.get('/', function (req, res) {
+router.get('/initialRender', function (req, res) {
 	console.log("We got a visitor");
 
 	var pixelArr = [];
