@@ -1,13 +1,16 @@
+
 <h1>Socket Test Page</h1>
+<input id="clickMe" type="button" value="Change Pixel" onclick="changePixel();" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
 <script>
-  var socket = io.connect( "http://localhost:3000");
-  socket.on('pixelStream', function (data) {
-    console.log(data);
-    socket.emit('pixel_changed', { 
-    	posX: 1,
-    	posY: 1,
-    	color: 'blue',
-     });
-  });
+	function changePixel() {
+	  var socket = io.connect( "http://localhost:3000");
+	  socket.on('pixelStream', function (data) {
+	    socket.emit('pixel_changed', { 
+	    	posX: 1,
+	    	posY: 1,
+	    	color: 'blue',
+	     });
+	  });
+	}
 </script>

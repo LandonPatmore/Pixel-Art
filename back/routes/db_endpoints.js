@@ -21,7 +21,7 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 server.listen(3000);
 
 router.get('/initialRender', function (req, res) {
-	console.log("We got a visitor");
+	console.log(req.ip + ": performing initial render");
 
 	var pixelArr = [];
 	Pixel.find({}, '-_id posX posY currentColor', function(err, pixels) {
@@ -30,17 +30,20 @@ router.get('/initialRender', function (req, res) {
 			var objectValue = JSON.parse(string);
 	    	pixelArr.push(objectValue);
 	    });
-	    console.log(pixelArr);
 		res.json(pixelArr); 
 	});
 });
 
+router.get('/', function (req, res) {
+	console.log(req.ip + ': at API index');
+	res.sendFile( __dirname + '/socket.html' );
+});
+
 io.on('connection', function (socket) {
-
-  	// socket.emit('news', { hello: 'world' });
-
+  	socket.emit('pixelStream', { hello: 'world' });
   	socket.on('pixel_changed', function (data) {
-		Pixel.update({'posX': data.posX, 'posY': data.posY}, {$set: { 'currentColor': data.color }}, {upsert: true, strict: false}, function(err){console.log(err)});
+  		console.log('User x: changed pixel (' + data.posX + "," + data.posY + ") to color " + data.color);
+		Pixel.update({'posX': data.posX, 'posY': data.posY}, {$set: { 'currentColor': data.color }}, {upsert: true, strict: false}, function(err){});
   	});
 });
 
