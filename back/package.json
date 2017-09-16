@@ -1,0 +1,26 @@
+{
+  "name": "pixelart",
+  "version": "1.0.0",
+  "description": "Reverse engineer of Reddit's April Fools Day pixel art. ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/b-dorsal/BigRedHacks.git"
+  },
+  "author": "Landon Patmore, Brian Dorsey",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/b-dorsal/BigRedHacks/issues"
+  },
+  "homepage": "https://github.com/b-dorsal/BigRedHacks#readme",
+  "dependencies": {
+    "body-parser": "^1.18.1",
+    "mongoose": "^4.11.11"
+  },
+  "devDependencies": {
+    "jshint": "^2.9.4"
+  }
+}
