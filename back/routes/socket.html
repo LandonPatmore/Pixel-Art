@@ -8,7 +8,8 @@
 		socket.emit('pixel_changed', { 
 			posX: 1,
 			posY: 1,
-			color: 'red',
+			color: 'black',
+			hex: '#330044'
 		});
 	  
 		socket.on('confirm_pixel_change', function (data) {
