@@ -29,7 +29,7 @@ export default {
       x: 0,
       y: 0,
       colorPicked: null,
-      test: new Array(10),
+      test: new Array(100),
       dataArray: []
     }
   },
@@ -59,14 +59,13 @@ export default {
   watch: {
     dataArray: function() {
       for (let i = 0; i < this.test.length; i++) {
-        this.test[i] = new Array(10)
+        this.test[i] = new Array(100)
       }
 
       for (let i = 0; i < this.dataArray.length; i++) {
         if (this.test[this.dataArray[i].posX][this.dataArray[i].posY] === undefined) {
           this.test[this.dataArray[i].posX][this.dataArray[i].posY] = { type: Pixel, color: this.dataArray[i].currentHex, x: this.dataArray[i].posX, y: this.dataArray[i].posY }
         }
-        console.log(this.test[this.dataArray[i].posX][this.dataArray[i].posY])
       }
       for (let j = 0; j < this.test.length; j++) {
         for (let k = 0; k < this.test[j].length; k++) {
@@ -79,7 +78,6 @@ export default {
   },
   created: function() {
     this.getInitialData()
-    console.log('after created')
   }
 }
 </script>

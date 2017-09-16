@@ -1,5 +1,5 @@
 <template>
-  <div class="pixel" :style="color" @click="tellCoords(); sendColorChange();" @mouseover="changeColor" @mouseout="initialColor">
+  <div class="pixel" :style="color" @click="sendColorChange(); tellCoords();" @mouseover="changeColor" @mouseout="initialColor">
   </div>
 </template>
 
@@ -27,6 +27,7 @@ export default {
     },
     tellCoords: function() {
       this.$emit('coordinates', { x: this.x, y: this.y })
+      this.$socket.emit('pixel_changed', { posX: this.x, posY: this.y, hex: this.color.background })
     },
     changeColor: function() {
       this.oldBackground = this.color.background
@@ -39,6 +40,13 @@ export default {
       this.color.background = this.currentSelectedColor
       this.oldBackground = this.currentSelectedColor
     }
+  },
+  socket: {
+    events: {
+      confirm_pixel_change(msg) {
+        console.log('something changed ' + msg.pixelChanged)
+      }
+    }
   }
 }
 </script>
@@ -46,8 +54,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 .pixel {
-  width: 20px;
-  height: 20px;
-  border: 1px solid black;
+  width: 10px;
+  height: 10px;
 }
 </style>
