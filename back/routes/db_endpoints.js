@@ -11,7 +11,7 @@ var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 
 //Mongoose setup
-mongoose.connect('mongodb://PixelArtAPI:apipasspixelart@ds161640.mlab.com:61640/samplesitedata');
+mongoose.connect('mongodb://PixelArtAPI:apipasspixelart@ds161640.mlab.com:61640/samplesitedata', { useMongoClient: true });
 var db = mongoose.connection;
 //Bind connection to error event (to get notification of connection errors)
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
@@ -21,17 +21,6 @@ server.listen(3000);
 
 router.get('/', function (req, res) {
 	console.log("We got a visitor");
-
-		Pixel.find({}, function(err, pixels) {
-	    	var pixelMap = {};
-	    	var c = 0;
-		    pixels.forEach(function(pixel) {
-		    	//console.log(pixel);
-		      	pixelMap[c] = pixel;
-		      	c++;
-		    });
-			console.log(pixelMap);
-		});
 		
 
 		// Pixel.findOne({ pixelID: "000X000" })
@@ -48,6 +37,21 @@ router.get('/', function (req, res) {
 });
 
 io.on('connection', function (socket) {
+		Pixel.find({}, '-_id posX posY currentColor', function(err, pixels) {
+	    	var pixelArr = [];
+
+		    pixels.forEach(function(pixel) {
+		    	console.log("from db " + pixel);
+		    	var string = JSON.stringify(pixel);
+       			var objectValue = JSON.parse(string);
+		    	pixelArr.push(objectValue);
+		    });
+		    
+		    socket.emit('pixelStream', pixelArr);
+		});
+
+
+
   socket.emit('news', { hello: 'world' });
   socket.on('pixel_changed', function (data) {
     console.log(data);
