@@ -1,10 +1,21 @@
-<h1>Server is working.</h1>
-<script src="/socket.io/socket.io.js"></script>
+
+<h1>Socket Test Page</h1>
+<input id="clickMe" type="button" value="Change Pixel" onclick="changePixel();" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
 <script>
-  var socket = io.connect('localhost');
-  socket.on('news', function (data) {
-    console.log(data);
-    socket.emit('my other event', { my: 'data' });
-  });
+	function changePixel() {
+		var socket = io.connect( "http://10.33.1.149:3000");
+		socket.emit('pixel_changed', { 
+			posX: 1,
+			posY: 1,
+			color: 'red',
+		});
+	  
+		socket.on('confirm_pixel_change', function (data) {
+			//This is where you get bool to tell if the pixel was updated successfully 
+			console.log(data.pixelChanged);
+		});
+	}
 </script>
-<p>Stuff</p>
+<!-- 	  socket.on('pixelStream', function (data) {
+	  }); -->
