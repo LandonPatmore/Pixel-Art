@@ -16,8 +16,7 @@ export default {
       style: {
         background: null,
         opacity: null
-      },
-      hoverColor: '#999'
+      }
     }
   },
   methods: {

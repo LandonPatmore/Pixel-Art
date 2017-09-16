@@ -1,5 +1,5 @@
 <template>
-  <div class="pixel" :style="color" @click="tellCoords" @mouseover="changeColor" @mouseout="initialColor">
+  <div class="pixel" :style="color" @click="tellCoords(); sendColorChange();" @mouseover="changeColor" @mouseout="initialColor">
   </div>
 </template>
 
@@ -8,7 +8,7 @@ export default {
   name: 'pixel',
   props: [
     'position',
-    'randColor',
+    'initial',
     'currentSelectedColor'
   ],
   data() {
@@ -16,7 +16,7 @@ export default {
       x: this.position.x,
       y: this.position.y,
       color: {
-        background: this.randColor
+        background: this.initial
       },
       oldBackground: '#222'
     }
@@ -34,6 +34,10 @@ export default {
     },
     initialColor: function() {
       this.color.background = this.oldBackground
+    },
+    sendColorChange: function() {
+      this.color.background = this.currentSelectedColor
+      this.oldBackground = this.currentSelectedColor
     }
   }
 }
@@ -42,8 +46,8 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 .pixel {
-  width: 50px;
-  height: 50px;
+  width: 20px;
+  height: 20px;
   border: 1px solid black;
 }
 </style>
