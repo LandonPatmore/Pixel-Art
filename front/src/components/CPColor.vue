@@ -1,5 +1,5 @@
 <template>
-  <div class="cpcolor" :style="style" @click="sendColor">
+  <div class="cpcolor" :style="style" @click="sendColor" @mouseover="changeOpacity" @mouseout="initialColor">
   </div>
 </template>
 
@@ -14,13 +14,21 @@ export default {
       possibleColors: [{ name: 'Red', hex: '#d10000' }, { name: 'Orange', hex: '#ff6622' }, { name: 'Yellow', hex: '#ffda21' }, { name: 'Green', hex: '#33dd00' }, { name: 'Blue', hex: '#1133cc' }, { name: 'Pink', hex: '#FF69B4' }, { name: 'Purple', hex: '#330044' }, { name: 'Black', hex: '#000000' }, { name: 'White', hex: '#FFFFFF' }],
       name: null,
       style: {
-        background: null
-      }
+        background: null,
+        opacity: null
+      },
+      hoverColor: '#999'
     }
   },
   methods: {
     sendColor: function() {
       this.$emit('broadcastColor', this.style.background)
+    },
+    changeOpacity: function() {
+      this.style.opacity = 0.7
+    },
+    initialColor: function() {
+      this.style.opacity = null
     }
   },
   created: function() {

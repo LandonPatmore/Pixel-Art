@@ -19,7 +19,7 @@ export default {
     }
   },
   methods: {
-    sendColorUser: function(color) {
+    sendColorUser: function(color, name) {
       this.$emit('pickedColor', color)
     }
   }
@@ -30,9 +30,5 @@ export default {
 .colorPallete {
   display: flex;
   justify-content: center;
-
-  .cpcolor:hover {
-    opacity: 0.6;
-  }
 }
 </style>

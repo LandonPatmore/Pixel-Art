@@ -2,7 +2,7 @@
   <div id="app">
     <section id="flexarea" v-for="(z, i) in 2" :key="i">
       <template v-for="(k, n) in 2">
-        <pixel :key="n" :position='{x: i, y: n}' @coordinates='getCoords' @click.native="setColorPixel"></pixel>
+        <pixel :key="n" :position='{x: i, y: n}' @coordinates='getCoords' @click.native="setColorPixel" :randColor='getRandomColor()' :currentSelectedColor="colorPicked"></pixel>
       </template>
     </section>
     <h1>Coordinates</h1>
@@ -27,7 +27,8 @@ export default {
     return {
       x: 0,
       y: 0,
-      colorPicked: null
+      colorPicked: null,
+      red: 'red'
     }
   },
   methods: {
@@ -42,6 +43,14 @@ export default {
     setColorPixel: function() {
       console.log('clicked')
       this.color = this.colorPicked ? this.colorPicked : ''
+    },
+    getRandomColor: function() {
+      var letters = '0123456789ABCDEF'
+      var color = '#'
+      for (var i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)]
+      }
+      return color
     }
   }
 }
@@ -55,9 +64,5 @@ export default {
   width: 100px;
   justify-content: center;
   margin: 0 auto;
-
-  .pixel:hover {
-    background: blue;
-  }
 }
 </style>
