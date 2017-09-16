@@ -7,16 +7,19 @@
     </section>
     <h1>Coordinates</h1>
     <p>{{x}}, {{y}}</p>
+    <color-pallete></color-pallete>
   </div>
 </template>
 
 <script>
 import Pixel from './components/Pixel'
+import ColorPallete from './components/ColorPallete'
 
 export default {
   name: 'app',
   components: {
-    Pixel
+    Pixel,
+    ColorPallete
   },
   data() {
     return {
