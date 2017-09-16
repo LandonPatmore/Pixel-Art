@@ -22,9 +22,6 @@ export default {
     tellCoords: function() {
       this.$emit('coordinates', { x: this.x, y: this.y })
     }
-  },
-
-  computed: {
   }
 }
 </script>
