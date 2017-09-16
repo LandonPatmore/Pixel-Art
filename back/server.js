@@ -4,6 +4,7 @@ var bodyParser = require('body-parser');
 
 var index = require('./routes/index');
 var db = require('./routes/db_endpoints');
+var users = require('./routes/users');
 
 var port = 7000;
 
@@ -29,7 +30,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
 app.use('/', index);
-app.use('/api', [db]);
+app.use('/api', [users, db]);
 
 
 app.listen(port, function(){

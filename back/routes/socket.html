@@ -4,7 +4,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
 <script>
 	function changePixel() {
-		var socket = io.connect( "http://localhost:3000");
+		var socket = io.connect( "http://10.33.1.149:3000");
 		socket.emit('pixel_changed', { 
 			posX: 1,
 			posY: 1,
