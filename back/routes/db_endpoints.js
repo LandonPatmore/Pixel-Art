@@ -49,13 +49,26 @@ router.get('/', function (req, res) {
 io.on('connection', function (socket) {
   	socket.emit('pixelStream', { hello: 'world' });
   	socket.on('pixel_changed', function (data) {
-  		Pixel.update({'posX': data.posX, 'posY': data.posY}, {$set: { 'currentColor': data.color }, $push:{ pastColors: data.color }}, {passRawResult : true, upsert: false, strict: false}, function(err, pixel){
+
+  		var activeUser = "username123";
+
+
+  		Pixel.update({'posX': data.posX, 'posY': data.posY, $or:[ {'currentColor': {$ne : data.color}}, {'currentOwner': {$ne : activeUser}}] }, {$set: { 'currentColor': data.color, 'currentOwner': activeUser }, $push:{ 'pastColors': data.color, 'pastOwners': activeUser }}, { upsert: false, strict: false}, function(err, pixel){
+  			//console.log(pixel);
 			if(pixel.nModified < 1){
 				console.log('User x: failed to change pixel (' + data.posX + "," + data.posY + ") to color " + data.color);
 				socket.emit('confirm_pixel_change', { pixelChanged: false });
 			}else{
 				console.log('User x: changed pixel (' + data.posX + "," + data.posY + ") to color " + data.color);
-				socket.emit('confirm_pixel_change', { pixelChanged: true });
+				
+				User.update({'userID': activeUser}, {$inc: {numberPixelsChanged: 1, 'colorCounts.red': 1}}, function(err){
+					if(err){
+						console.log(err);
+						socket.emit('confirm_pixel_change', { pixelChanged: false });
+					}else{
+						socket.emit('confirm_pixel_change', { pixelChanged: true });
+					}
+				});
 			}
 		});
 
