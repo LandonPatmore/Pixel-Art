@@ -53,19 +53,46 @@ io.on('connection', function (socket) {
   		var color = hexToColor(data.hex);
 
   		Pixel.update({'posX': data.posX, 'posY': data.posY, $or:[ {'currentHex': {$ne : data.hex}}, {'currentOwner': {$ne : activeUser}}] }, {$set: { 'currentColor': color, 'currentOwner': activeUser, 'currentHex': data.hex }, $push:{ 'pastColors': data.color, 'pastOwners': activeUser }}, { new: true, strict: false}, function(err){
-  			var colorCountStr = 'colorCounts.' + color;
-  			console.log(colorCountStr);
+  			
+  			//console.log(colorCountStr);
 			if(err){
 				console.log("err: cant update pixel!");
 			}else{
-				User.update({'userID': activeUser}, {$inc: {numberPixelsChanged: 1, 'colorCounts.blue': 1}}, function(err){
+
+				var numberPixStr = 'numberPixelsChanged' + "";
+				var query = {};
+				query[numberPixStr] = 1;
+				query[color] = 1;
+				//User.update({'userID': activeUser}, {$inc: query, $push:{ 'currentPixels': {posX: data.posX, posY: data.posY}}}, function(err){
+				User.update({'userID': activeUser}, {$inc: query}, function(err){
 					if(err){
 						console.log("err: cant change user stats!");
 					}
 				});
 			}
-			console.log("broadcasting updated pixel to all clients");
+			//console.log("broadcasting updated pixel to all clients");
+			//Send the pixel update broadcast
 			io.emit('pixel_update', { posX: data.posX, posY: data.posY, hex: data.hex });
+			//Send the feed info
+			io.emit('feed_update', { posX: data.posX, posY: data.posY, color: color, hex: data.hex, user: activeUser});
+
+
+			//Get the top 10 users by the number of pixels theyve changed.
+			User.find({},['-_id', 'numberPixelsChanged', 'userID'], // Columns to Return
+			{
+			    skip:0, // Starting Row
+			    limit:10, // Ending Row
+			    sort:{
+			        numberPixelsChanged: -1 //Sort by Date Added DESC
+			    }
+			},
+			function(err,leaders){
+				if(err){
+					console.log("err: leaderboard loading error");
+			    }
+			    //console.log(leaders);
+			    io.emit('leaderboard_update', { leaders: leaders});
+			});
 		});
   	});
 });
@@ -75,31 +102,31 @@ function hexToColor(hex){
 	var color = "";
 	switch(hex) {
 	    case '#d10000':
-	        return 'red';
+	        return 'Red';
 	        break;
 	    case '#ff6622':
-	        return 'orange';
+	        return 'Orange';
 	        break;
 	    case '#ffda21':
-	        return 'yellow';
+	        return 'Yellow';
 	        break;
 		case '#33dd00':
-	        return 'green';
+	        return 'Green';
 	        break;
 	    case '#1133cc':
-	        return 'blue';
+	        return 'Blue';
 	        break;
 	    case '#FF69B4':
-	        return 'pink';
+	        return 'Pink';
 	        break;
 	    case '#330044':
-	        return 'purple';
+	        return 'Purple';
 	        break;
 	    case '#000000':
-	        return 'black';
+	        return 'Black';
 	        break;
 	    case '#FFFFFF':
-	        return 'white';
+	        return 'White';
 	        break;
 	    default:
 	        return '';

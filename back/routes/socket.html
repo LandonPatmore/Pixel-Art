@@ -11,14 +11,15 @@
 			hex: '#FF69B4'
 		});
 	}
-	socket.on('confirm_pixel_change', function (data) {
+
+	socket.on('pixel_update', function (pixel) {
 		//This is where you get bool to tell if the pixel was updated successfully 
-		console.log(data.pixelChanged);
+		console.log(pixel);
 	});
 
-	socket.on('pixel_update', function (data) {
+	socket.on('feed_update', function (feed) {
 		//This is where you get bool to tell if the pixel was updated successfully 
-		console.log(data);
+		console.log(feed);
 	});
 </script>
 <!-- 	  socket.on('pixelStream', function (data) {
