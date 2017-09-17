@@ -15,4 +15,17 @@ var db = mongoose.connection;
 //Bind connection to error event (to get notification of connection errors)
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
+//Gets user info from by a user ID.
+router.get('/user/:userID', function (req, res) {
+	console.log(req.ip + ': getting user info for ' + req.params.userID);
+	User.findOne({ userID: req.params.userID }, '-_id -accountCreated')
+		.then(user => {
+			res.status(200).send(user);
+		})
+		.catch(err => {
+			res.status(500).send(err);
+		})
+});
+
+
 module.exports = router;

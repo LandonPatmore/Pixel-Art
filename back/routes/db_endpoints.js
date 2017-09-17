@@ -14,6 +14,7 @@ var io = require('socket.io')(server);
 //Mongoose setup
 mongoose.connect('mongodb://PixelArtAPI:apipasspixelart@ds161640.mlab.com:61640/samplesitedata', { useMongoClient: true });
 var db = mongoose.connection;
+
 //Bind connection to error event (to get notification of connection errors)
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
@@ -21,12 +22,12 @@ server.listen(3000);
 
 //Sends all the current pixel data to the client.
 router.get('/initialRender', function (req, res) {
-	console.log(req.ip + ": performing initial render");
+	//console.log(getOurTime() + " - " + req.ip + ": performing initial render");
 
 	var pixelArr = [];
 	Pixel.find({}, '-_id posX posY currentHex', function(err, pixels) {
 		if (err) {
-			console.log();
+			console.log("err: cant find get pixels");
 			res.status(500);
 		}else{
 		    pixels.forEach(function(pixel) {
@@ -47,46 +48,69 @@ router.get('/', function (req, res) {
 
 //Pixel changed stream
 io.on('connection', function (socket) {
-  	socket.emit('pixelStream', { hello: 'world' });
   	socket.on('pixel_changed', function (data) {
-
   		var activeUser = "username123";
+  		var color = hexToColor(data.hex);
 
-
-  		Pixel.update({'posX': data.posX, 'posY': data.posY, $or:[ {'currentColor': {$ne : data.color}}, {'currentOwner': {$ne : activeUser}}] }, {$set: { 'currentColor': data.color, 'currentOwner': activeUser, 'currentHex': data.hex }, $push:{ 'pastColors': data.color, 'pastOwners': activeUser }}, { upsert: false, strict: false}, function(err, pixel){
-  			//console.log(pixel);
-			if(pixel.nModified < 1){
-				console.log('User x: failed to change pixel (' + data.posX + "," + data.posY + ") to color " + data.color);
-				socket.emit('confirm_pixel_change', { pixelChanged: false });
+  		Pixel.update({'posX': data.posX, 'posY': data.posY, $or:[ {'currentHex': {$ne : data.hex}}, {'currentOwner': {$ne : activeUser}}] }, {$set: { 'currentColor': color, 'currentOwner': activeUser, 'currentHex': data.hex }, $push:{ 'pastColors': data.color, 'pastOwners': activeUser }}, { new: true, strict: false}, function(err){
+  			var colorCountStr = 'colorCounts.' + color;
+  			console.log(colorCountStr);
+			if(err){
+				console.log("err: cant update pixel!");
 			}else{
-				console.log('User x: changed pixel (' + data.posX + "," + data.posY + ") to color " + data.color);
-				
-				User.update({'userID': activeUser}, {$inc: {numberPixelsChanged: 1, 'colorCounts.red': 1}}, function(err){
+				User.update({'userID': activeUser}, {$inc: {numberPixelsChanged: 1, 'colorCounts.blue': 1}}, function(err){
 					if(err){
-						console.log(err);
-						socket.emit('confirm_pixel_change', { pixelChanged: false });
-					}else{
-						socket.emit('confirm_pixel_change', { pixelChanged: true });
+						console.log("err: cant change user stats!");
 					}
 				});
 			}
+			console.log("broadcasting updated pixel to all clients");
+			io.emit('pixel_update', { posX: data.posX, posY: data.posY, hex: data.hex });
 		});
-
-
   	});
 });
 
-//Gets user info from by a user ID.
-router.get('/user/:userID', function (req, res) {
-	console.log(req.ip + ': getting user info for ' + req.params.userID);
-	User.findOne({ userID: req.params.userID }, '-_id -accountCreated')
-		.then(user => {
-			res.status(200).send(user);
-		})
-		.catch(err => {
-			res.status(500).send(err);
-		})
-});
+//Changes the hex value from the client to a color string for db
+function hexToColor(hex){
+	var color = "";
+	switch(hex) {
+	    case '#d10000':
+	        return 'red';
+	        break;
+	    case '#ff6622':
+	        return 'orange';
+	        break;
+	    case '#ffda21':
+	        return 'yellow';
+	        break;
+		case '#33dd00':
+	        return 'green';
+	        break;
+	    case '#1133cc':
+	        return 'blue';
+	        break;
+	    case '#FF69B4':
+	        return 'pink';
+	        break;
+	    case '#330044':
+	        return 'purple';
+	        break;
+	    case '#000000':
+	        return 'black';
+	        break;
+	    case '#FFFFFF':
+	        return 'white';
+	        break;
+	    default:
+	        return '';
+	}
+}
+
+function getOurTime(){
+	var d = new Date(); // for now
+	return d.getHours() + ":" + d.getMinutes(); + ":" + d.getMinutes();
+}
+
 
 module.exports = router;
 

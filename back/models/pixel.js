@@ -11,8 +11,8 @@ const PixelSchema = new mongoose.Schema({
     posY: Number,
     currentColor: String,
     currentHex: String,
-    currentOwner: { type: Schema.Types.ObjectId, ref: 'User' },
-    pastOwners: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+    currentOwner: String,
+    pastOwners: [String],
     pastColors: [String],
     lastChanged: String
 }, { collection: 'pixels' })

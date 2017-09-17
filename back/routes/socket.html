@@ -3,20 +3,23 @@
 <input id="clickMe" type="button" value="Change Pixel" onclick="changePixel();" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
 <script>
+	var socket = io.connect( "http://10.33.1.149:3000");
 	function changePixel() {
-		var socket = io.connect( "http://10.33.1.149:3000");
 		socket.emit('pixel_changed', { 
-			posX: 1,
-			posY: 1,
-			color: 'black',
-			hex: '#330044'
-		});
-	  
-		socket.on('confirm_pixel_change', function (data) {
-			//This is where you get bool to tell if the pixel was updated successfully 
-			console.log(data.pixelChanged);
+			posX: 23,
+			posY: 55,
+			hex: '#FF69B4'
 		});
 	}
+	socket.on('confirm_pixel_change', function (data) {
+		//This is where you get bool to tell if the pixel was updated successfully 
+		console.log(data.pixelChanged);
+	});
+
+	socket.on('pixel_update', function (data) {
+		//This is where you get bool to tell if the pixel was updated successfully 
+		console.log(data);
+	});
 </script>
 <!-- 	  socket.on('pixelStream', function (data) {
 	  }); -->

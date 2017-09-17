@@ -8,7 +8,7 @@ PixelSchema = require('./pixel.js')
 const UserSchema = new mongoose.Schema({
 	userID: String,
 	accountCreated: String,
-	currentPixels: [{ type: Schema.Types.ObjectId, ref: 'Pixel' }],
+	currentPixels: [String],
 	numberPixelsChanged: Number,
 	colorCounts: {
 		red: Number,
