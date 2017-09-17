@@ -1,6 +1,6 @@
 <template>
   <div id="liveleaderboard">
-    Leader Board
+    Leaderboard
     <template v-for="leader in leaders">
       <live-leader-board-box :leader="leader" :key="leader.userID" v-if="leader.userID"></live-leader-board-box>
     </template>
@@ -31,5 +31,4 @@ export default {
 </script>
 
 <style lang="scss">
-#livelist {}
 </style>

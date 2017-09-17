@@ -1,6 +1,6 @@
 <template>
   <div class="colorCanvas">
-    <div id="wrapper">
+    <div id="wrapper" :style="fullboard">
       <section id="flexarea" v-for="(rows, outterIndex) in overallRows" :key="outterIndex">
         <template v-for="(col, innerIndex) in rows">
           <component :key="innerIndex" :currentSelectedColor="selectedColor" :screenLocation="{x: outterIndex, y: innerIndex}" :is="col.type" :socketColor="col.color"></component>
@@ -20,7 +20,8 @@ export default {
     Pixel
   },
   props: [
-    'selectedColor'
+    'selectedColor',
+    'fullboard'
   ],
   data() {
     return {
