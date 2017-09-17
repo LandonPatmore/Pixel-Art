@@ -1,8 +1,8 @@
 <template>
   <div id="app">
-    <!-- <live-list id="liveList"></live-list> -->
+    <live-list id="liveList"></live-list>
     <c-canvas id="canvas"></c-canvas>
-    <!-- <live-leaderboard id="leaderboard"></live-leaderboard> -->
+    <live-leaderboard id="leaderboard"></live-leaderboard>
     <footer id="footer">
       Copyright © {{currentYear}}. Pyxl. All Rights Reserved.
     </footer>
@@ -41,14 +41,15 @@ export default {
   width: 100%;
 
   display: grid;
-  grid-template-areas: "sideL middle middle" "footer footer footer";
+  grid-template-areas: "sideL middle sideR" "footer footer footer";
 
   grid-template-rows: 1fr auto;
-  grid-template-columns: 0fr 1fr;
+  grid-template-columns: 0.2fr 1fr 0.2fr;
 }
 
 #canvas {
   grid-area: middle;
+  overflow: scroll;
 }
 
 #liveList {

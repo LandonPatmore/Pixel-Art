@@ -45,7 +45,6 @@ export default {
   watch: {
     socketColor: function() {
       this.pixelStyle.background = this.socketColor
-      console.log('socket changed the color')
     }
   }
 }
@@ -54,8 +53,8 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 .pixel {
-  width: 25px;
-  height: 25px;
+  width: 2%;
+  height: 100%;
   border: 1px solid black;
 }
 </style>
