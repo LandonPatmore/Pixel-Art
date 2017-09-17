@@ -29,7 +29,7 @@ export default {
         this.previewHoldBackground = this.currentSelectedColor
         this.$socket.emit('pixel_changed', { posX: this.x, posY: this.y, hex: this.pixelStyle.background })
       } else {
-        console.log('no color selected')
+        alert('No color was selected')
       }
     },
     previewChangeColor: function() {

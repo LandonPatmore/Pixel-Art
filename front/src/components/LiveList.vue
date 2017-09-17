@@ -26,7 +26,6 @@ export default {
   socket: {
     events: {
       feed_update: function(data) {
-        console.log(data)
         this.listArray.unshift(data)
       }
     }
@@ -35,5 +34,4 @@ export default {
 </script>
 
 <style lang="scss">
-#livelist {}
 </style>

@@ -3,35 +3,31 @@
     <div id="wrapper">
       <section id="flexarea" v-for="(rows, outterIndex) in overallRows" :key="outterIndex">
         <template v-for="(col, innerIndex) in rows">
-          <component :key="innerIndex" :currentSelectedColor="colorPicked" :screenLocation="{x: outterIndex, y: innerIndex}" :is="col.type" :socketColor="col.color"></component>
+          <component :key="innerIndex" :currentSelectedColor="selectedColor" :screenLocation="{x: outterIndex, y: innerIndex}" :is="col.type" :socketColor="col.color"></component>
         </template>
       </section>
     </div>
-    <color-pallete @pickedColor="getSelectedColor" style="margin-top: 50px;"></color-pallete>
   </div>
 </template>
 
 <script>
 import Pixel from './Pixel'
-import ColorPallete from './ColorPallete'
 import axios from 'axios'
 
 export default {
   name: 'colorCanvas',
   components: {
-    Pixel,
-    ColorPallete
+    Pixel
   },
+  props: [
+    'selectedColor'
+  ],
   data() {
     return {
-      colorPicked: null,
       overallRows: Array(50).fill().map(() => [])
     }
   },
   methods: {
-    getSelectedColor: function(color) {
-      this.colorPicked = color
-    },
     initializePixelsBlank: function() {
       for (let i = 0; i < this.overallRows.length; i++) {
         for (let j = 0; j < 50; j++) {
@@ -42,7 +38,6 @@ export default {
       }
     },
     setUpdatedPixel: function(pixel) {
-      console.log(pixel)
       let row = this.overallRows[pixel.posX]
       row.splice(pixel.posY, 1, { type: Pixel, color: pixel.hex })
       this.overallRows.splice(pixel.posX, 1, row)
