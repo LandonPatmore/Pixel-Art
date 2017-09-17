@@ -8,20 +8,21 @@ PixelSchema = require('./pixel.js')
 const UserSchema = new mongoose.Schema({
 	userID: String,
 	accountCreated: String,
-	currentPixels: [{ type: Schema.Types.ObjectId, ref: 'Pixel' }],
+	currentPixels: {posX: Number, posY: Number},
 	numberPixelsChanged: Number,
-	colorCounts: {
-		red: Number,
-		green: Number,
-        blue: Number,
-        orange: Number,
-        yellow: Number,
-        pink: Number,
-        black: Number,
-        white: Number,
-        purple: Number
-	}
+	Red: Number,
+	Green: Number,
+    Blue: Number,
+    Orange: Number,
+    Yellow: Number,
+    Pink: Number,
+    Black: Number,
+    White: Number,
+    Purple: Number,
+    timeDisabled: Number,
+    password: String
 }, { collection: 'users' })
+
 
 UserSchema.plugin(timestamps)
 
