@@ -1,8 +1,8 @@
 <template>
   <div id="colorCanvas">
-    <section id="flexarea" v-for="(rows, outterIndex) in overallRows" :key="outterIndex">
-      <template v-for="(col, innerIndex) in rows">
-        <component :key="innerIndex" :currentSelectedColor="colorPicked" :screenLocation="{x: outterIndex, y: innerIndex}" :is="col.type" :socketColor="col.color"></component>
+    <section id="flexarea">
+      <template v-for="(col, innerIndex) in overallRows">
+        <component :key="innerIndex" :currentSelectedColor="colorPicked" :screenLocation="{x: 0, y: innerIndex}" :is="col.type" :socketColor="col.color"></component>
       </template>
     </section>
     <color-pallete @pickedColor="getSelectedColor"></color-pallete>
@@ -31,20 +31,15 @@ export default {
     },
     initializePixelsBlank: function() {
       for (let i = 0; i < this.overallRows.length; i++) {
-        for (let j = 0; j < this.overallRows[i].length; j++) {
-          this.overallRows[i].splice(j, 1, { type: Pixel, color: '#333' })
-        }
+        this.overallRows.splice(i, 1, { type: Pixel, color: 'white' })
       }
     },
     setUpdatedPixel: function(pixel) {
       console.log(pixel)
-      this.overallRows[pixel.posX].splice(pixel.posY, 1, { type: Pixel, color: pixel.hex })
+      this.overallRows.splice(pixel.posY, 1, { type: Pixel, color: pixel.hex })
     }
   },
   created: function() {
-    for (let i = 0; i < this.overallRows.length; i++) {
-      this.overallRows[i] = new Array(30)
-    }
     this.initializePixelsBlank()
   },
   socket: {
