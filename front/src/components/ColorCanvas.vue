@@ -1,22 +1,17 @@
 <template>
   <div id="colorCanvas">
-    <section id="flexarea" v-for="(array, index) in test" :key="index">
-      <template v-for="(data, dataIndex) in array">
-        <component :key="dataIndex" :position='{x: index, y: dataIndex}' @coordinates='getCoords' @click.native="setColorPixel" :initial='data.color' :currentSelectedColor="colorPicked" :is="data.type"></component>
+    <section id="flexarea" v-for="(rows, outterIndex) in overallRows" :key="outterIndex">
+      <template v-for="(col, innerIndex) in rows">
+        <component :key="innerIndex" :currentSelectedColor="colorPicked" :screenLocation="{x: outterIndex, y: innerIndex}" :is="col.type" :socketColor="col.color"></component>
       </template>
     </section>
-    <h1>Coordinates</h1>
-    <p>{{x}}, {{y}}</p>
     <color-pallete @pickedColor="getSelectedColor"></color-pallete>
-    <h1>Color Selected</h1>
-    <p>{{colorPicked}}</p>
   </div>
 </template>
 
 <script>
 import Pixel from './Pixel'
 import ColorPallete from './ColorPallete'
-import axios from 'axios'
 
 export default {
   name: 'colorCanvas',
@@ -26,69 +21,49 @@ export default {
   },
   data() {
     return {
-      x: 0,
-      y: 0,
       colorPicked: null,
-      test: new Array(100),
-      dataArray: []
+      overallRows: new Array(30)
     }
   },
   methods: {
-    getCoords: function(args) {
-      this.x = args.x
-      this.y = args.y
-    },
     getSelectedColor: function(color) {
       this.colorPicked = color
     },
-    setColorPixel: function() {
-      this.color = this.colorPicked ? this.colorPicked : ''
+    initializePixelsBlank: function() {
+      for (let i = 0; i < this.overallRows.length; i++) {
+        for (let j = 0; j < this.overallRows[i].length; j++) {
+          this.overallRows[i].splice(j, 1, { type: Pixel, color: '#333' })
+        }
+      }
     },
-    getInitialData: function() {
-      var that = this
-      axios.get('http://10.33.1.149:7000/api/initialRender')
-        .then(response => {
-          that.dataArray = response.data
-          console.log('done loading')
-        })
-        .catch(error => {
-          console.log(error)
-        })
-    }
-  },
-  watch: {
-    dataArray: function() {
-      for (let i = 0; i < this.test.length; i++) {
-        this.test[i] = new Array(100)
-      }
-
-      for (let i = 0; i < this.dataArray.length; i++) {
-        if (this.test[this.dataArray[i].posX][this.dataArray[i].posY] === undefined) {
-          this.test[this.dataArray[i].posX][this.dataArray[i].posY] = { type: Pixel, color: this.dataArray[i].currentHex, x: this.dataArray[i].posX, y: this.dataArray[i].posY }
-        }
-      }
-      for (let j = 0; j < this.test.length; j++) {
-        for (let k = 0; k < this.test[j].length; k++) {
-          if (this.test[j][k] === undefined) {
-            this.test[j][k] = { type: Pixel, color: '#FFFFFF', x: j, y: k }
-          }
-        }
-      }
+    setUpdatedPixel: function(pixel) {
+      console.log(pixel)
+      this.overallRows[pixel.posX].splice(pixel.posY, 1, { type: Pixel, color: pixel.hex })
     }
   },
   created: function() {
-    this.getInitialData()
+    for (let i = 0; i < this.overallRows.length; i++) {
+      this.overallRows[i] = new Array(30)
+    }
+    this.initializePixelsBlank()
+  },
+  socket: {
+    events: {
+      pixel_update: function(data) {
+        this.setUpdatedPixel(data)
+      }
+    }
   }
 }
 </script>
 
 <style lang="scss">
-#canvas {}
+#colorCanvas {}
 
 #flexarea {
   display: flex;
   width: 1000px;
-  justify-content: center;
   margin: 0 auto;
+  justify-content: center;
 }
 </style>

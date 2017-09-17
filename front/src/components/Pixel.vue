@@ -1,5 +1,5 @@
 <template>
-  <div class="pixel" :style="color" @click="sendColorChange(); tellCoords();" @mouseover="changeColor" @mouseout="initialColor">
+  <div class="pixel" :style="pixelStyle" @click="setChangeColor" @mouseover="previewChangeColor" @mouseout="previewChangeColor">
   </div>
 </template>
 
@@ -7,45 +7,46 @@
 export default {
   name: 'pixel',
   props: [
-    'position',
-    'initial',
-    'currentSelectedColor'
+    'currentSelectedColor',
+    'screenLocation',
+    'socketColor'
   ],
   data() {
     return {
-      x: this.position.x,
-      y: this.position.y,
-      color: {
-        background: this.initial
+      pixelStyle: {
+        background: this.socketColor
       },
-      oldBackground: '#222'
+      previewHoldBackground: null,
+      active: false,
+      x: this.screenLocation.x,
+      y: this.screenLocation.y
     }
   },
   methods: {
-    getName: function() {
-      console.log(this.x + ', ' + this.y)
+    setChangeColor: function() {
+      if (this.pixelStyle.background) {
+        this.pixelStyle.background = this.currentSelectedColor
+        this.previewHoldBackground = this.currentSelectedColor
+        this.$socket.emit('pixel_changed', { posX: this.x, posY: this.y, hex: this.pixelStyle.background })
+        console.log('X: ' + this.x + ', Y: ' + this.y + ' has changed to: ' + this.pixelStyle.background)
+      } else {
+        console.log('no color selected')
+      }
     },
-    tellCoords: function() {
-      this.$emit('coordinates', { x: this.x, y: this.y })
-      this.$socket.emit('pixel_changed', { posX: this.x, posY: this.y, hex: this.color.background })
-    },
-    changeColor: function() {
-      this.oldBackground = this.color.background
-      this.color.background = this.currentSelectedColor
-    },
-    initialColor: function() {
-      this.color.background = this.oldBackground
-    },
-    sendColorChange: function() {
-      this.color.background = this.currentSelectedColor
-      this.oldBackground = this.currentSelectedColor
+    previewChangeColor: function() {
+      if (!this.active) {
+        this.previewHoldBackground = this.pixelStyle.background
+        this.pixelStyle.background = this.currentSelectedColor
+      } else {
+        this.pixelStyle.background = this.previewHoldBackground
+      }
+      this.active = !this.active
     }
   },
-  socket: {
-    events: {
-      confirm_pixel_change(msg) {
-        console.log('something changed ' + msg.pixelChanged)
-      }
+  watch: {
+    socketColor: function() {
+      this.pixelStyle.background = this.socketColor
+      console.log('socket changed the color')
     }
   }
 }
@@ -54,7 +55,8 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 .pixel {
-  width: 10px;
-  height: 10px;
+  width: 25px;
+  height: 25px;
+  border: 1px solid black;
 }
 </style>

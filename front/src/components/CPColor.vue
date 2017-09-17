@@ -1,5 +1,5 @@
 <template>
-  <div class="cpcolor" :style="style" @click="sendColor" @mouseover="changeOpacity" @mouseout="initialColor">
+  <div class="cpcolor" :style="style" @click="sendColor" @mouseover="changeOpacity" @mouseout="changeOpacity">
   </div>
 </template>
 
@@ -7,16 +7,17 @@
 export default {
   name: 'cpcolor',
   props: [
-    'index'
+    'colorName',
+    'colorHex'
   ],
   data() {
     return {
-      possibleColors: [{ name: 'Red', hex: '#d10000' }, { name: 'Orange', hex: '#ff6622' }, { name: 'Yellow', hex: '#ffda21' }, { name: 'Green', hex: '#33dd00' }, { name: 'Blue', hex: '#1133cc' }, { name: 'Pink', hex: '#FF69B4' }, { name: 'Purple', hex: '#330044' }, { name: 'Black', hex: '#000000' }, { name: 'White', hex: '#FFFFFF' }],
-      name: null,
       style: {
-        background: null,
+        background: this.colorHex,
         opacity: null
-      }
+      },
+      color: this.colorName,
+      active: false
     }
   },
   methods: {
@@ -24,15 +25,14 @@ export default {
       this.$emit('broadcastColor', this.style.background)
     },
     changeOpacity: function() {
-      this.style.opacity = 0.7
-    },
-    initialColor: function() {
-      this.style.opacity = null
+      if (!this.active) {
+        this.style.opacity = 0.7
+        this.active = !this.active
+      } else {
+        this.style.opacity = null
+        this.active = !this.active
+      }
     }
-  },
-  created: function() {
-    this.name = this.possibleColors[this.index].name
-    this.style.background = this.possibleColors[this.index].hex
   }
 }
 </script>
