@@ -1,6 +1,6 @@
 <template>
   <div id="livelist">
-    Latest Changes
+    <p>Latest Changes</p>
     <section>
       <template v-for="(updated, index) in listArray">
         <live-list-box :update="updated" :key="index"></live-list-box>
@@ -33,5 +33,8 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
+p{
+  padding: 10px;
+}
 </style>

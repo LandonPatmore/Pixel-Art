@@ -1,16 +1,20 @@
 <template>
   <div id="app">
-    <router-view></router-view>
+    <router-view @username="onUsername" :userName="tt"></router-view>
   </div>
 </template>
 
 <script>
 export default {
   name: 'app',
-  components: {
-  },
   data() {
     return {
+      tt: ''
+    }
+  },
+  methods: {
+    onUsername: function(data) {
+      this.tt = data
     }
   }
 }

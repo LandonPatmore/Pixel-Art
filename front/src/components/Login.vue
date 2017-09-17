@@ -5,7 +5,7 @@
       <div class="input-group">
         <input type="text" class="form-control" placeholder="user name..." v-model="nameInput">
         <span class="input-group-btn">
-          <router-link class="btn btn-success" type="button" v-if="nameInput.length >= 1" to="/board" tag="button">Go!</router-link>
+          <button class="btn btn-success" type="button" v-if="nameInput.length >= 1" @click="createUser">Go!</button>
           <button class="btn btn-danger" type="button" v-else disabled>Go!</button>
         </span>
       </div>
@@ -14,6 +14,8 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   name: 'login',
   data() {
@@ -22,6 +24,18 @@ export default {
     }
   },
   methods: {
+    createUser: function() {
+      axios.post('http://10.33.1.149:7000/api/user/register', {
+        username: this.nameInput
+      })
+        .then(response => {
+          console.log(response)
+          this.$session.set('username', this.nameInput)
+          this.$router.push({ name: 'Game' })
+        }).catch(error => {
+          console.log(error)
+        })
+    }
   }
 }
 </script>

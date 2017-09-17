@@ -1,7 +1,7 @@
 <template>
   <div class="fullboardview">
-      <h1>Live Full View</h1>
-      <color-canvas :fullboard="{height: '800px', width: '800px'}" id="board"></color-canvas>
+    <h1>Live Full View</h1>
+    <color-canvas :fullboard="{height: '800px', width: '800px'}" id="board"></color-canvas>
   </div>
 </template>
 
@@ -22,12 +22,12 @@ export default {
 </script>
 
 <style lang="scss">
-.fullboardview{
-    height: 100%;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+.fullboardview {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 </style>

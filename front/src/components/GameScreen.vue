@@ -4,8 +4,9 @@
     <c-canvas id="canvas" :selectedColor="selectedColor"></c-canvas>
     <live-leaderboard id="leaderboard"></live-leaderboard>
     <section id="pallete">
-      <router-link type="button" id="fullViewButton" to="/fullboard" tag="button">View Full Area</router-link>
-        <color-pallete @pickedColor="getSelectedColor"></color-pallete>
+      <router-link type="button" class="btn btn-primary" to="/fullboard" tag="button">View Full Area</router-link>
+      <button type="button" class="btn btn-danger" @click="destroySession" tag="button">Logout</button>
+      <color-pallete @pickedColor="getSelectedColor"></color-pallete>
     </section>
     <footer id="footer">
       Copyright © {{currentYear}}. Pyxl. All Rights Reserved.
@@ -36,7 +37,14 @@ export default {
   methods: {
     getSelectedColor: function(color) {
       this.selectedColor = color
+    },
+    destroySession: function() {
+      this.$session.destroy()
+      this.$router.push({ name: 'Login' })
     }
+  },
+  created: function() {
+    console.log(this.$session.get('username'))
   }
 }
 </script>
@@ -69,24 +77,20 @@ export default {
 }
 
 #liveList {
-  background: lightsalmon;
+  background: white;
   grid-area: sideL;
   overflow-y: scroll;
 }
 
 #leaderboard {
-  background: lightgreen;
+  background: white;
   grid-area: sideR;
 }
 
 #footer {
-  background: lightblue;
+  background: #222326;
+  color: white;
   grid-area: footer;
-}
-
-#fullViewButton {
-  width: 100px;
-  height: 20px;
-  background: lightgreen;
+  padding: 10px;
 }
 </style>

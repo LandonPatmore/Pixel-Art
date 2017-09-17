@@ -21,10 +21,10 @@ export default {
 <style lang="scss">
 #liveleaderboardbox {
   border-bottom: 1px solid black;
-  margin: 10px;
+  padding: 10px;
 }
 
 p {
-  margin: 0;
+  margin: 0 !important;
 }
 </style>
