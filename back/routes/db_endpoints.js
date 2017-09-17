@@ -3,16 +3,20 @@ var express = require('express');
 var app = express();
 const router = express.Router();
 const mongoose = require('mongoose');
+//Data models
 const User = require('../models/user');
 const Pixel = require('../models/pixel');
-
-mongoose.Promise = Promise;
+//Private stuff... bitch.
+const secrets = require('../private_info/secrets_real');
 // Socket.io setup
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 
+const BLOCK_PIXEL_CHANGE_TIMER = 10; //seconds
+
+mongoose.Promise = Promise;
 //Mongoose setup
-mongoose.connect('mongodb://PixelArtAPI:apipasspixelart@ds161640.mlab.com:61640/samplesitedata', { useMongoClient: true });
+mongoose.connect('mongodb://' + secrets.DB_USER + ':' + secrets.DB_PASS + '@ds161640.mlab.com:61640/samplesitedata', { useMongoClient: true });
 var db = mongoose.connection;
 
 //Bind connection to error event (to get notification of connection errors)
@@ -59,40 +63,49 @@ io.on('connection', function (socket) {
 				console.log("err: cant update pixel!");
 			}else{
 
+				var d = new Date();
+				var now = Math.round(d.getTime() / 1000);
+				var timeBack = Math.round(d.getTime() / 1000) - BLOCK_PIXEL_CHANGE_TIMER;
+
 				var numberPixStr = 'numberPixelsChanged' + "";
-				var query = {};
-				query[numberPixStr] = 1;
-				query[color] = 1;
+				var timeDisabledStr = 'timeDisabled' + "";
+				var updates = {};
+				updates[numberPixStr] = 1;
+				updates[color] = 1;
+				//console.log(timeBack);
+
 				//User.update({'userID': activeUser}, {$inc: query, $push:{ 'currentPixels': {posX: data.posX, posY: data.posY}}}, function(err){
-				User.update({'userID': activeUser}, {$inc: query}, function(err){
+				User.update({'userID': activeUser}, {$set: {'timeDisabled': now}, $inc: updates }, function(err){
 					if(err){
 						console.log("err: cant change user stats!");
+						return;
 					}
+					//console.log("broadcasting updated pixel to all clients");
+					//Send the pixel update broadcast
+					io.emit('pixel_update', { posX: data.posX, posY: data.posY, hex: data.hex });
+					//Send the feed info
+					io.emit('feed_update', { posX: data.posX, posY: data.posY, color: color, hex: data.hex, user: activeUser});
+
+
+					//Get the top 10 users by the number of pixels theyve changed.
+					User.find({},['-_id', 'numberPixelsChanged', 'userID'], // Columns to Return
+					{
+					    skip:0, // Starting Row
+					    limit:10, // Ending Row
+					    sort:{
+					        numberPixelsChanged: -1 //Sort by Date Added DESC
+					    }
+					},
+					function(err,leaders){
+						if(err){
+							console.log("err: leaderboard loading error");
+					    }
+					    //console.log(leaders);
+					    io.emit('leaderboard_update', { leaders: leaders});
+					});
 				});
 			}
-			//console.log("broadcasting updated pixel to all clients");
-			//Send the pixel update broadcast
-			io.emit('pixel_update', { posX: data.posX, posY: data.posY, hex: data.hex });
-			//Send the feed info
-			io.emit('feed_update', { posX: data.posX, posY: data.posY, color: color, hex: data.hex, user: activeUser});
-
-
-			//Get the top 10 users by the number of pixels theyve changed.
-			User.find({},['-_id', 'numberPixelsChanged', 'userID'], // Columns to Return
-			{
-			    skip:0, // Starting Row
-			    limit:10, // Ending Row
-			    sort:{
-			        numberPixelsChanged: -1 //Sort by Date Added DESC
-			    }
-			},
-			function(err,leaders){
-				if(err){
-					console.log("err: leaderboard loading error");
-			    }
-			    //console.log(leaders);
-			    io.emit('leaderboard_update', { leaders: leaders});
-			});
+			
 		});
   	});
 });

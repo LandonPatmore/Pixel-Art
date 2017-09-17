@@ -1,6 +1,17 @@
 
 <h1>Socket Test Page</h1>
 <input id="clickMe" type="button" value="Change Pixel" onclick="changePixel();" />
+
+<form name="loginForm">
+  User:<br>
+  <input type="text" name="username" value="">
+  <br>
+  Pass:<br>
+  <input type="password" name="password" value="">
+  <br><br>
+  <input type="submit" value="Login" onclick="tryLogin();">
+</form> 
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
 <script>
 	var socket = io.connect( "http://10.33.1.149:3000");
@@ -21,6 +32,16 @@
 		//This is where you get bool to tell if the pixel was updated successfully 
 		console.log(feed);
 	});
+
+
+
+	function tryLogin() {
+		var form = document.getElementById('loginForm');
+		form.setAttribute('method', 'post');
+		form.setAttribute('action', 'http://10.33.1.149:7000/api/user/login/');
+		form.style.display = 'hidden';
+		document.body.appendChild(form)
+		form.submit();
+	}
+
 </script>
-<!-- 	  socket.on('pixelStream', function (data) {
-	  }); -->

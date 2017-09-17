@@ -19,9 +19,10 @@ const UserSchema = new mongoose.Schema({
     Black: Number,
     White: Number,
     Purple: Number,
-    disabled: Boolean,
+    timeDisabled: Number,
     password: String
 }, { collection: 'users' })
+
 
 UserSchema.plugin(timestamps)
 
