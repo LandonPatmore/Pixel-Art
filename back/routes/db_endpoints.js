@@ -24,7 +24,7 @@ router.get('/initialRender', function (req, res) {
 	console.log(req.ip + ": performing initial render");
 
 	var pixelArr = [];
-	Pixel.find({}, '-_id posX posY currentColor', function(err, pixels) {
+	Pixel.find({}, '-_id posX posY currentHex', function(err, pixels) {
 		if (err) {
 			console.log();
 			res.status(500);
@@ -53,7 +53,7 @@ io.on('connection', function (socket) {
   		var activeUser = "username123";
 
 
-  		Pixel.update({'posX': data.posX, 'posY': data.posY, $or:[ {'currentColor': {$ne : data.color}}, {'currentOwner': {$ne : activeUser}}] }, {$set: { 'currentColor': data.color, 'currentOwner': activeUser }, $push:{ 'pastColors': data.color, 'pastOwners': activeUser }}, { upsert: false, strict: false}, function(err, pixel){
+  		Pixel.update({'posX': data.posX, 'posY': data.posY, $or:[ {'currentColor': {$ne : data.color}}, {'currentOwner': {$ne : activeUser}}] }, {$set: { 'currentColor': data.color, 'currentOwner': activeUser, 'currentHex': data.hex }, $push:{ 'pastColors': data.color, 'pastOwners': activeUser }}, { upsert: false, strict: false}, function(err, pixel){
   			//console.log(pixel);
 			if(pixel.nModified < 1){
 				console.log('User x: failed to change pixel (' + data.posX + "," + data.posY + ") to color " + data.color);
