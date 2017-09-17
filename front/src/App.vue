@@ -1,11 +1,11 @@
 <template>
   <div id="app">
-    <live-list id="liveList"></live-list>
+    <!-- <live-list id="liveList"></live-list> -->
     <c-canvas id="canvas"></c-canvas>
-    <live-leaderboard id="leaderboard"></live-leaderboard>
-    <div id="footer">
-footer
-    </div>
+    <!-- <live-leaderboard id="leaderboard"></live-leaderboard> -->
+    <footer id="footer">
+      Copyright © {{currentYear}}. Pyxl. All Rights Reserved.
+    </footer>
   </div>
 </template>
 
@@ -23,40 +23,46 @@ export default {
   },
   data() {
     return {
+      currentYear: new Date().getFullYear()
     }
   }
 }
 </script>
 
 <style lang="scss">
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+
+* {
+  font-family: Roboto, sans-serif;
+}
+
 #app {
   height: 100%;
   width: 100%;
 
   display: grid;
-  grid-template-areas: 
-  "sideL middle sideR"
-  "footer footer footer";
+  grid-template-areas: "sideL middle middle" "footer footer footer";
 
   grid-template-rows: 1fr auto;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 0fr 1fr;
 }
 
-#canvas{
+#canvas {
   grid-area: middle;
 }
 
-#liveList{
+#liveList {
   background: lightsalmon;
   grid-area: sideL;
+  overflow-y: scroll;
 }
 
-#leaderboard{
+#leaderboard {
   background: lightgreen;
   grid-area: sideR;
 }
 
-#footer{
+#footer {
   background: lightblue;
   grid-area: footer;
 }
