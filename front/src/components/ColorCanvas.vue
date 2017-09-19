@@ -25,13 +25,13 @@ export default {
   ],
   data() {
     return {
-      overallRows: Array(50).fill().map(() => [])
+      overallRows: Array(100).fill().map(() => [])
     }
   },
   methods: {
     initializePixelsBlank: function() {
       for (let i = 0; i < this.overallRows.length; i++) {
-        for (let j = 0; j < 50; j++) {
+        for (let j = 0; j < 100; j++) {
           let row = this.overallRows[i]
           row.splice(j, 1, { type: Pixel, color: 'white' })
           this.overallRows.splice(i, 1, row)
@@ -45,7 +45,7 @@ export default {
     },
     setDatabasePixels: function() {
       var vm = this
-      axios.get('http://10.33.1.149:7000/api/initialRender')
+      axios.get('http://localhost:7000/api/initialRender')
         .then(response => {
           for (let i = 0; i < response.data.length; i++) {
             let d = response.data[i]
@@ -84,7 +84,7 @@ export default {
 
 #flexarea {
   display: flex;
-  height: 2%;
+  height: 1%;
   width: 100%;
   margin: 0 auto;
   justify-content: center;

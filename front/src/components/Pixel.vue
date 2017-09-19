@@ -24,10 +24,16 @@ export default {
   },
   methods: {
     setChangeColor: function() {
+      // if ((this.$session.get('timeout') + 5000) >= Date.now()) {
+      //   alert(((this.$session.get('timeout') + 5000) - Date.now()) / 1000 + ' seconds left until you can add a pixel.')
+      //   return
+      // }
+
       if (this.pixelStyle.background) {
         this.pixelStyle.background = this.currentSelectedColor
         this.previewHoldBackground = this.currentSelectedColor
-        this.$socket.emit('pixel_changed', { posX: this.x, posY: this.y, hex: this.pixelStyle.background })
+        this.$socket.emit('pixel_changed', { posX: this.x, posY: this.y, hex: this.pixelStyle.background, user: this.$session.get('username') })
+        this.$session.set('timeout', Date.now())
       } else {
         alert('No color was selected')
       }
@@ -53,8 +59,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 .pixel {
-  width: 2%;
+  width: 1%;
   height: 100%;
-  border: 1px solid black;
 }
 </style>

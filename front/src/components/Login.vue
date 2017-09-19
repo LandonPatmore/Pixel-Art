@@ -1,5 +1,6 @@
 <template>
   <div class="login">
+    <h1>Welcome to Pyxl Place!</h1>
     <div id="loginBox">
       <h1>Please enter a user name.</h1>
       <div class="input-group">
@@ -25,7 +26,7 @@ export default {
   },
   methods: {
     createUser: function() {
-      axios.post('http://10.33.1.149:7000/api/user/register', {
+      axios.post('http://localhost:7000/api/user/register', {
         username: this.nameInput
       })
         .then(response => {

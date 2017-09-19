@@ -4,7 +4,7 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import VueWebsocket from 'vue-websocket'
-Vue.use(VueWebsocket, 'ws://10.33.1.149:3000')
+Vue.use(VueWebsocket, 'ws://localhost:3000')
 import VueSession from 'vue-session'
 Vue.use(VueSession)
 

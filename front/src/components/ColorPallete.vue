@@ -16,7 +16,7 @@ export default {
   },
   data() {
     return {
-      possibleColors: [{ name: 'Red', hex: '#d10000' }, { name: 'Orange', hex: '#ff6622' }, { name: 'Yellow', hex: '#ffda21' }, { name: 'Green', hex: '#33dd00' }, { name: 'Blue', hex: '#1133cc' }, { name: 'Pink', hex: '#FF69B4' }, { name: 'Purple', hex: '#330044' }, { name: 'Black', hex: '#000000' }, { name: 'White', hex: '#FFFFFF' }]
+      possibleColors: [{ name: 'Red', hex: '#d10000' }, { name: 'Orange', hex: '#ff6622' }, { name: 'Yellow', hex: '#ffda21' }, { name: 'Green', hex: '#33dd00' }, { name: 'Blue', hex: '#1133cc' }, { name: 'Pink', hex: '#FF69B4' }, { name: 'Purple', hex: '#330044' }, { name: 'Black', hex: '#000000' }, { name: 'Grey', hex: '#999999' }, { name: 'White', hex: '#FFFFFF' }]
     }
   },
   methods: {

@@ -42,9 +42,6 @@ export default {
       this.$session.destroy()
       this.$router.push({ name: 'Login' })
     }
-  },
-  created: function() {
-    console.log(this.$session.get('username'))
   }
 }
 </script>
@@ -85,6 +82,7 @@ export default {
 #leaderboard {
   background: white;
   grid-area: sideR;
+  overflow-y: scroll;
 }
 
 #footer {
