@@ -14,7 +14,7 @@
     "axios": "^0.16.2",
     "fs": "0.0.1-security",
     "net": "^1.0.2",
-    "node-sass": "^4.5.3",
+    "node-sass": "^4.13.1",
     "sass-loader": "^6.0.6",
     "socket.io": "^2.0.3",
     "socket.io-client": "^2.0.3",
